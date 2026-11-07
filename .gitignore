@@ -1,0 +1,92 @@
+# Entornos virtuales y configuración local
+.venv/
+venv/
+ENV/
+env/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python: bytecode, cachés y paquetes generados
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.ruff_cache/
+.pyright/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.cache/
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build/
+wheels/
+
+# Pruebas y depuración locales
+*.log
+*.out
+*.prof
+*.coverage
+coverage.xml
+
+# Datos locales o bases generadas
+*.sqlite
+*.sqlite3
+*.db
+instance/
+
+# Sistemas operativos
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Editores e IDEs: ajustes de usuario y estado local
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+*.swp
+*.swo
+*~
+
+# Artefactos locales de asistentes de IA
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache*
+.aider*.tmp
+.claude/settings.local.json
+.claude/projects/
+.claude/cache/
+.claude/worktrees/
+.codex/auth.json
+.codex/sessions/
+.codex/cache/
+.codex/tmp/
+.continue/sessions/
+.continue/cache/
+.copilot/chatSessions/
+.cursor/debug.log
+.cursor/*.log
+.cursor/*.tmp
+.windsurf/logs/
+.windsurf/cache/
+*.prompt.history
+*.chat.history
+
+# Variables locales de herramientas de entorno
+.python-version.local
