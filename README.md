@@ -14,7 +14,7 @@ El alcance completo y los criterios pendientes están en [docs/alcance-inicial.m
 
 ## Estado
 
-Estructura inicial preparada. La siguiente etapa es convertir el alcance en tareas pequeñas y comenzar la implementación.
+Alcance definido y trabajo inicial organizado en issues. La siguiente etapa es modelar los datos de los repositorios.
 
 ## Herramientas previstas
 
