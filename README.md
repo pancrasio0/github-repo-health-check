@@ -14,7 +14,7 @@ El alcance completo y los criterios pendientes están en [docs/alcance-inicial.m
 
 ## Estado
 
-Alcance definido y trabajo inicial organizado en issues. La siguiente etapa es modelar los datos de los repositorios.
+Modelo de repositorio y cliente HTTP preparados. La siguiente etapa es recorrer todas las páginas de resultados.
 
 ## Herramientas previstas
 
