@@ -14,7 +14,7 @@ El alcance completo y los criterios pendientes están en [docs/alcance-inicial.m
 
 ## Estado
 
-Modelo, cliente HTTP y paginación preparados. La siguiente etapa es manejar errores de API con mensajes útiles.
+Modelo, cliente HTTP, paginación y errores de API preparados. La siguiente etapa es definir las reglas de revisión y el umbral de actividad reciente.
 
 ## Herramientas previstas
 
