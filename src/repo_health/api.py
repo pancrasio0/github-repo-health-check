@@ -27,20 +27,40 @@ class GitHubClient:
         )
 
     def list_user_repositories(self, username: str) -> list[Repository]:
-        """Return the first page of public repositories owned by a user."""
+        """Return all public repositories owned by a user."""
         path = f"/users/{quote(username, safe='')}/repos"
         return self._list_repositories(path, {"type": "owner", "per_page": 100})
 
     def list_organization_repositories(self, organization: str) -> list[Repository]:
-        """Return the first page of public repositories owned by an organization."""
+        """Return all public repositories owned by an organization."""
         path = f"/orgs/{quote(organization, safe='')}/repos"
         return self._list_repositories(path, {"type": "public", "per_page": 100})
 
     def _list_repositories(self, path: str, params: dict[str, str | int]) -> list[Repository]:
         response = self._client.get(path, params=params)
-        response.raise_for_status()
+        repositories: list[Repository] = []
+        visited_urls = {str(response.url)}
 
-        return [self._to_repository(item) for item in response.json()]
+        while True:
+            response.raise_for_status()
+            repositories.extend(self._to_repository(item) for item in response.json())
+
+            next_link = response.links.get("next")
+            if next_link is None:
+                return repositories
+
+            next_url = httpx.URL(next_link["url"])
+            if (
+                next_url.scheme != "https"
+                or next_url.host != "api.github.com"
+                or next_url.port not in (None, 443)
+            ):
+                raise ValueError("GitHub returned a pagination link outside api.github.com.")
+            if str(next_url) in visited_urls:
+                raise ValueError("GitHub returned a repeated pagination link.")
+
+            visited_urls.add(str(next_url))
+            response = self._client.get(next_url)
 
     @staticmethod
     def _to_repository(data: dict[str, object]) -> Repository:

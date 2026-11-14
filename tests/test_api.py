@@ -68,6 +68,63 @@ def test_lists_public_organization_repositories() -> None:
     assert repositories[0].language is None
 
 
+def test_follows_next_links_and_preserves_repository_order() -> None:
+    requested_pages: list[str | None] = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        page = request.url.params.get("page")
+        requested_pages.append(page)
+        if page is None:
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "name": "first",
+                        "html_url": "https://github.com/octocat/first",
+                        "archived": False,
+                    }
+                ],
+                headers={
+                    "Link": (
+                        "<https://api.github.com/users/octocat/repos?type=owner&"
+                        'per_page=100&page=2>; rel="next"'
+                    )
+                },
+            )
+
+        assert page == "2"
+        return httpx.Response(
+            200,
+            json=[
+                {
+                    "name": "second",
+                    "html_url": "https://github.com/octocat/second",
+                    "archived": False,
+                }
+            ],
+        )
+
+    with GitHubClient(transport=httpx.MockTransport(respond)) as client:
+        repositories = client.list_user_repositories("octocat")
+
+    assert requested_pages == [None, "2"]
+    assert [repository.name for repository in repositories] == ["first", "second"]
+
+
+def test_rejects_pagination_links_outside_github() -> None:
+    transport = httpx.MockTransport(
+        lambda request: httpx.Response(
+            200,
+            json=[],
+            headers={"Link": '<https://example.com/page/2>; rel="next"'},
+        )
+    )
+
+    with GitHubClient(transport=transport) as client:
+        with pytest.raises(ValueError, match="outside api.github.com"):
+            client.list_user_repositories("octocat")
+
+
 def test_raises_for_http_error_status() -> None:
     transport = httpx.MockTransport(
         lambda request: httpx.Response(404, json={"message": "Not Found"})

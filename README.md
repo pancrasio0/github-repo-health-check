@@ -14,7 +14,7 @@ El alcance completo y los criterios pendientes están en [docs/alcance-inicial.m
 
 ## Estado
 
-Modelo de repositorio y cliente HTTP preparados. La siguiente etapa es recorrer todas las páginas de resultados.
+Modelo, cliente HTTP y paginación preparados. La siguiente etapa es manejar errores de API con mensajes útiles.
 
 ## Herramientas previstas
 
