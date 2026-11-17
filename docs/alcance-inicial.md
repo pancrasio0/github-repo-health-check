@@ -28,6 +28,16 @@ La persona usuaria ejecuta el CLI indicando el nombre de usuario u organización
 5. Presentar mensajes entendibles para usuario inexistente, errores de red, respuestas inválidas y límites de solicitudes.
 6. Probar las reglas y errores con respuestas simuladas, sin depender de Internet.
 
+## Reglas de revisión
+
+- Descripción ausente o vacía: severidad media, con sugerencia para explicar el propósito del repositorio.
+- Licencia ausente: severidad media, con sugerencia para aclarar los términos de reutilización.
+- Topics ausentes: severidad baja, con sugerencia para mejorar la descripción y el descubrimiento.
+- Repositorio archivado: hallazgo informativo; archivar intencionalmente no es un problema.
+- Sin actualizaciones por más de 365 días: hallazgo informativo; poca actividad no significa mala calidad.
+- Si no hay fecha de actualización o no incluye zona horaria, no se evalúa actividad.
+- No se calcula una puntuación global.
+
 ## Límites y exclusiones
 
 - Solo lectura: no se crean, editan ni eliminan recursos en GitHub.
@@ -42,6 +52,4 @@ Una persona puede instalar el CLI siguiendo el README, analizar los repositorios
 
 ## Pendientes para las siguientes sesiones
 
-- Acordar el umbral y la redacción de “actividad reciente”.
-- Decidir qué niveles de severidad se usarán y cómo se asignan.
-- Convertir las tareas del MVP en issues pequeñas antes de implementar.
+- Ampliar las pruebas de reglas y casos límite.

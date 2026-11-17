@@ -14,7 +14,7 @@ El alcance completo y los criterios pendientes están en [docs/alcance-inicial.m
 
 ## Estado
 
-Modelo, cliente HTTP, paginación y errores de API preparados. La siguiente etapa es definir las reglas de revisión y el umbral de actividad reciente.
+Modelo, cliente HTTP, paginación, errores de API y reglas de revisión preparados. La siguiente etapa es ampliar las pruebas de reglas y casos límite.
 
 ## Herramientas previstas
 
