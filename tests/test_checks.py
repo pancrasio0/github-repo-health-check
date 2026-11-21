@@ -1,5 +1,5 @@
 from dataclasses import replace
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, timedelta, timezone
 
 import pytest
 
@@ -66,6 +66,25 @@ def test_does_not_report_activity_at_exact_365_day_boundary() -> None:
     findings = analyze_repository(repository(updated_at=updated_at), as_of=AS_OF)
 
     assert "inactive" not in [finding.code for finding in findings]
+
+
+def test_normalizes_timezone_offsets_before_checking_activity_boundary() -> None:
+    updated_at = (AS_OF - timedelta(days=INACTIVITY_DAYS, seconds=1)).astimezone(
+        timezone(timedelta(hours=-5))
+    )
+
+    findings = analyze_repository(repository(updated_at=updated_at), as_of=AS_OF)
+
+    assert "inactive" in [finding.code for finding in findings]
+
+
+def test_reports_archived_and_inactive_as_separate_informative_findings() -> None:
+    updated_at = AS_OF - timedelta(days=INACTIVITY_DAYS + 1)
+
+    findings = analyze_repository(repository(archived=True, updated_at=updated_at), as_of=AS_OF)
+
+    assert [finding.code for finding in findings] == ["archived", "inactive"]
+    assert all(finding.severity is Severity.INFORMATIVE for finding in findings)
 
 
 @pytest.mark.parametrize("updated_at", [None, datetime(2025, 1, 1)])
