@@ -195,6 +195,49 @@ def test_translates_server_error() -> None:
     assert error.value.status_code == 500
 
 
+def test_translates_non_rate_limit_forbidden_response_as_api_error() -> None:
+    transport = httpx.MockTransport(
+        lambda request: httpx.Response(403, json={"message": "Resource forbidden"})
+    )
+
+    with GitHubClient(transport=transport) as client:
+        with pytest.raises(GitHubAPIError, match="HTTP 403") as error:
+            client.list_user_repositories("octocat")
+
+    assert not isinstance(error.value, GitHubRateLimitError)
+
+
+def test_propagates_rate_limit_from_later_page_without_retry() -> None:
+    requests: list[str | None] = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        page = request.url.params.get("page")
+        requests.append(page)
+        if page is None:
+            return httpx.Response(
+                200,
+                json=[],
+                headers={
+                    "Link": (
+                        "<https://api.github.com/users/octocat/repos?type=owner&"
+                        'per_page=100&page=2>; rel="next"'
+                    )
+                },
+            )
+        return httpx.Response(
+            429,
+            json={"message": "secondary rate limit"},
+            headers={"Retry-After": "30"},
+        )
+
+    with GitHubClient(transport=httpx.MockTransport(respond)) as client:
+        with pytest.raises(GitHubRateLimitError) as error:
+            client.list_user_repositories("octocat")
+
+    assert requests == [None, "2"]
+    assert error.value.retry_after == "30"
+
+
 def test_translates_timeout_and_connection_errors() -> None:
     def timeout(request: httpx.Request) -> httpx.Response:
         raise httpx.ReadTimeout("timed out", request=request)
@@ -232,6 +275,17 @@ def test_translates_timeout_and_connection_errors() -> None:
                 }
             ],
         ),
+        httpx.Response(
+            200,
+            json=[
+                {
+                    "name": "repo",
+                    "html_url": "https://github.com/octocat/repo",
+                    "archived": False,
+                    "updated_at": "not-a-date",
+                }
+            ],
+        ),
     ],
     ids=[
         "malformed-json",
@@ -239,6 +293,7 @@ def test_translates_timeout_and_connection_errors() -> None:
         "missing-repository-fields",
         "wrong-required-field-type",
         "wrong-topics-type",
+        "malformed-date",
     ],
 )
 def test_translates_invalid_responses(response: httpx.Response) -> None:
