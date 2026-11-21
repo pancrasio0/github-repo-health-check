@@ -14,7 +14,7 @@ El alcance completo y los criterios pendientes están en [docs/alcance-inicial.m
 
 ## Estado
 
-Modelo, cliente HTTP, paginación, errores de API y reglas de revisión preparados. La siguiente etapa es ampliar las pruebas de reglas y casos límite.
+CLI, reglas de revisión, informe Markdown y manejo de errores implementados. Las pruebas usan respuestas simuladas y no requieren conexión a GitHub.
 
 ## Herramientas previstas
 
@@ -34,6 +34,21 @@ Comandos de calidad previstos:
     pytest
     ruff check .
     ruff format --check .
+
+## Uso
+
+Revisa los repositorios públicos de un usuario:
+
+    repo-health octocat
+
+Para una organización, indica `--organization`. Para guardar un informe Markdown,
+añade `--output informe.md`:
+
+    repo-health octocat --output informe.md
+    repo-health mi-organizacion --organization --output informe.md
+
+El informe incluye la fecha de generación, un resumen por severidad y las sugerencias
+de cada repositorio. Los hallazgos son informativos y no representan una puntuación.
 
 ## Principios
 

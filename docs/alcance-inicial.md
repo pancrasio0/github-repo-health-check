@@ -52,4 +52,6 @@ Una persona puede instalar el CLI siguiendo el README, analizar los repositorios
 
 ## Pendientes para las siguientes sesiones
 
-- Ampliar las pruebas de reglas y casos límite.
+- Automatizar pytest y ruff en GitHub Actions (Día 14).
+- Completar documentación de contribución y plantillas útiles (Día 15).
+- Revisar el MVP y preparar la versión 0.1.0 (Día 16).
